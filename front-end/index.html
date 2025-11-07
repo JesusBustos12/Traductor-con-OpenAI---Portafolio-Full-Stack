@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./Assets/CSS/styles.css"/>
+    <link rel="icon" type="image/svg+xml" href="./Assets/Imgs/language-solid-full.svg"/>
+    <script src="./Assets/Js/main.js" defer></script>
+    <title>Translate</title>
+</head>
+
+<body>
+
+    <main class="layout">
+
+        <header class="layout__header">
+            <img id="img" src="./Assets/Imgs/language-solid-full.svg"/>
+            <h1 id="title">Translate</h1>
+        </header>
+
+        <section class="layout__chat">
+
+            <div class="chat__messages">
+
+            </div>
+
+            <div class="chat__inputs">
+
+                <input type="text" id="inputText" placeholder="Write something to translate:"/>
+
+                <div class="inputs__content">
+
+                    <select id="targetLang">
+
+                        <option value="english">English</option>
+                        <option value="spanish">Spanish</option>
+                        <option value="frances">Frances</option>
+                        <option value="italian">Italian</option>
+                        <option value="german">German</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="russian">russian</option>
+
+                    </select>
+
+                    <input type="button" id="btn" value="Translate"/>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
