@@ -16,7 +16,7 @@ function createMessage(text, type = "bot") {
     
     // Add dots if it's the loader
     if (text === "Bot: Traduciendo...") {
-        msg.innerHTML = "Bot: Traduciendo<span class='dots'>...</span>";
+        msg.innerHTML = "Bot: Traduciendo <span class='dots'><span></span></span>";
     }
 
     messagesContent.appendChild(msg);
