@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Traductor inteligente impulsado por OpenAI. Traduce texto a inglés, español, francés, italiano, alemán, japonés y más idiomas al instante.">
+    <meta name="author" content="Jesus Bustos Arizmendi">
     <link rel="stylesheet" href="./Assets/CSS/styles.css"/>
     <link rel="icon" type="image/svg+xml" href="./Assets/Imgs/language-solid-full.svg"/>
     <script src="./Assets/Js/main.js" defer></script>
-    <title>Translate</title>
+    <title>Translate — Traductor IA con OpenAI</title>
 </head>
 
 <body>
@@ -15,41 +17,51 @@
     <main class="layout">
 
         <header class="layout__header">
-            <img id="img" src="./Assets/Imgs/language-solid-full.svg"/>
+            <img id="img" src="./Assets/Imgs/language-solid-full.svg" alt="Ícono de traducción de idiomas"/>
             <h1 id="title">Translate</h1>
         </header>
 
         <section class="layout__chat">
 
-            <div class="chat__messages">
+            <div class="chat__messages" role="log" aria-live="polite" aria-label="Historial de traducciones">
 
             </div>
 
             <div class="chat__inputs">
 
-                <input type="text" id="inputText" placeholder="Write something to translate:"/>
+                <label for="inputText" class="sr-only">Texto a traducir</label>
+                <input type="text" id="inputText" placeholder="Escribe algo para traducir..." maxlength="500" autocomplete="off"/>
+                <span id="charCounter" class="char-counter">0 / 500</span>
 
                 <div class="inputs__content">
 
-                    <select id="targetLang">
+                    <label for="targetLang" class="sr-only">Idioma de destino</label>
+                    <select id="targetLang" aria-label="Seleccionar idioma de destino">
 
                         <option value="english">English</option>
                         <option value="spanish">Spanish</option>
-                        <option value="frances">Frances</option>
+                        <option value="french">French</option>
                         <option value="italian">Italian</option>
                         <option value="german">German</option>
                         <option value="japanese">Japanese</option>
-                        <option value="russian">russian</option>
+                        <option value="russian">Russian</option>
+                        <option value="portuguese">Portuguese</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="korean">Korean</option>
 
                     </select>
 
-                    <input type="button" id="btn" value="Translate"/>
+                    <button type="button" id="btn" aria-label="Traducir texto">Translate</button>
 
                 </div>
 
             </div>
 
         </section>
+
+        <footer class="layout__footer">
+            <p>Powered by OpenAI — Desarrollado por Jesús Bustos</p>
+        </footer>
 
     </main>
 

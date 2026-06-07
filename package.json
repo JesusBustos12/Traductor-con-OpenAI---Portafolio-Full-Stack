@@ -1,12 +1,12 @@
 {
-  "name": "node",
+  "name": "traductor-openai",
   "version": "1.0.0",
-  "description": "Translate",
+  "description": "Aplicación web de traducción inteligente con OpenAI API",
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "serve": "node app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jesus Bustos Arizmendi",
@@ -14,7 +14,9 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10",
     "openai": "^6.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

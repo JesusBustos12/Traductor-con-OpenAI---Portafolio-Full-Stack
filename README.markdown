@@ -32,16 +32,19 @@ Render / Vercel (opcional): Despliegue en producción.
 
 ## Estructura del proyecto
 traductor-openai/
-├── app.js                # Servidor Express + lógica OpenAI
-├── package.json          # Dependencias y scripts
-├── package-lock.json     # Lockfile de dependencias
-├── .env.example          # Plantilla de variables (sin claves)
-├── .gitignore            # Protege .env, node_modules
-├── index.html            # Estructura del traductor
-├── Assets/
-│   ├── CSS/styles.css    # Diseño neón, burbujas
-│   └── JS/main.js        # Lógica del frontend (DOM, fetch)
-└── README.md             # Esta documentación
+├── app.js                       # Servidor Express + lógica OpenAI
+├── package.json                 # Dependencias y scripts
+├── .env.example                 # Plantilla de variables (sin claves)
+├── .gitignore                   # Protege .env, node_modules
+├── vercel.json                  # Configuración de despliegue
+├── front-end/
+│   ├── index.html               # Estructura del traductor
+│   └── Assets/
+│       ├── CSS/styles.css       # Diseño neón, burbujas
+│       ├── Js/main.js           # Lógica del frontend (DOM, fetch)
+│       ├── Imgs/                # Íconos SVG
+│       └── Fonts/Montserrat/    # Tipografía local
+└── README.markdown              # Esta documentación
 
 ## Habilidades demostradas
 Este proyecto refleja competencias clave para un Junior Full-Stack:
@@ -79,5 +82,4 @@ Contáctame en:
 GitHub: github.com/JesusBustos12
 LinkedIn: linkedin.com/in/jesus-bustos-arizmendi-325329283
 Correo: jesusbustosarizmendi0@gmail.com
-numero de celular: 762-119-2732
 ¡Gracias por revisar mi trabajo!
