@@ -15,7 +15,7 @@ Construir un portafolio profesional listo para despliegue en producción.
 ## Características
 Traducciones directas: Soporta idiomas como inglés, español, francés, italiano, alemán, japonés y ruso.
 Prompts inteligentes: Sistema de prompts para traducciones precisas y directas, sin respuestas adicionales.
-Mensajes diferenciados: Usuario (verde oscuro) y bot (rojo) con formato de burbuja.
+Mensajes diferenciados: Usuario (azul oscuro) y bot (violeta translúcido) con formato de burbuja tipo Glassmorphism.
 Diseño moderno: Tema oscuro, tipografía clara, sombras neón, transiciones suaves.
 Entrada por teclado: Enviar mensaje con botón o entrada de texto.
 Seguridad: API key protegida con dotenv y nunca expuesta en GitHub.
@@ -58,8 +58,8 @@ Autonomía: Construido en 7 horas sin seguir tutoriales.
 
 ## Demo en vivo
 Prueba el traductor en tiempo real:
-https://traductor-ai.onrender.com
-(Espera 20-30 segundos al primer uso — plan gratuito)
+https://[tu-proyecto].vercel.app
+(Desplegado como función Serverless de Vercel, respuesta inmediata)
 
 ## Pregunta:
 "¿Hola cómo estás? a inglés"
