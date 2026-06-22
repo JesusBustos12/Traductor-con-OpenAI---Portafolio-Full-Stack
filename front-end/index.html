@@ -7,7 +7,7 @@
     <meta name="description" content="Traductor inteligente impulsado por OpenAI. Traduce texto a inglés, español, francés, italiano, alemán, japonés y más idiomas al instante.">
     <meta name="author" content="Jesus Bustos Arizmendi">
     <link rel="stylesheet" href="./Assets/CSS/styles.css"/>
-    <link rel="icon" type="image/svg+xml" href="./Assets/Imgs/language-solid-full.svg"/>
+    <link rel="icon" type="image/png" href="./Assets/Imgs/traductor.png"/>
     <script src="./Assets/Js/main.js" defer></script>
     <title>Translate — Traductor IA con OpenAI</title>
 </head>
@@ -17,8 +17,14 @@
     <main class="layout">
 
         <header class="layout__header">
-            <img id="img" src="./Assets/Imgs/language-solid-full.svg" alt="Ícono de traducción de idiomas"/>
-            <h1 id="title">Translate</h1>
+            <div class="header__brand">
+                <img id="img" src="./Assets/Imgs/traductor.png" alt="Ícono de traducción de idiomas"/>
+                <h1 id="title">Translate</h1>
+            </div>
+            <div id="limitBadge" class="limit-badge" aria-live="polite">
+                <span id="limitCount">20</span> / 20<br>
+                <small>Restantes</small>
+            </div>
         </header>
 
         <section class="layout__chat">

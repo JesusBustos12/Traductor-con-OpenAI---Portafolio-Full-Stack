@@ -2,8 +2,30 @@ const btn = document.getElementById("btn");
 const inputText = document.getElementById("inputText");
 const messagesContent = document.querySelector(".chat__messages");
 const charCounter = document.getElementById("charCounter");
+const limitCount = document.getElementById("limitCount");
 
 let isTranslating = false;
+
+async function fetchLimit() {
+    try {
+        const response = await fetch("/api/limit");
+        const data = await response.json();
+        if (data.success && data.remaining !== undefined) {
+            limitCount.textContent = data.remaining;
+            if (data.remaining <= 0) {
+                btn.disabled = true;
+                btn.classList.add("btn--disabled");
+                inputText.disabled = true;
+                inputText.placeholder = "Límite de traducciones alcanzado.";
+            }
+        }
+    } catch (error) {
+        console.error("Error al obtener el límite:", error);
+    }
+}
+
+// Cargar límite al inicio
+fetchLimit();
 
 function getTimestamp() {
     return new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
@@ -69,6 +91,14 @@ async function handleTranslation() {
         const data = await response.json();
         removeLoader(loaderElement);
 
+        if (data.remaining !== undefined) {
+            limitCount.textContent = data.remaining;
+            if (data.remaining <= 0) {
+                inputText.disabled = true;
+                inputText.placeholder = "Límite de traducciones alcanzado.";
+            }
+        }
+
         if (data.translateText) {
             createMessage(`${getTimestamp()} — Bot: ${data.translateText.trim()}`, "bot");
         } else {
@@ -89,8 +119,12 @@ async function handleTranslation() {
         charCounter.textContent = "0 / 500";
         charCounter.classList.remove("char-counter--warning");
         isTranslating = false;
-        btn.disabled = false;
-        btn.classList.remove("btn--disabled");
+        
+        // Mantener deshabilitado si ya no hay traducciones
+        if (parseInt(limitCount.textContent) > 0) {
+            btn.disabled = false;
+            btn.classList.remove("btn--disabled");
+        }
     }
 }
 

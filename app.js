@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+import mysql from "mysql2/promise";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +14,24 @@ if (!process.env.OPENAI_API_KEY) {
     console.error("ERROR: OPENAI_API_KEY is not defined in environment variables.");
     process.exit(1);
 }
+
+const pool = mysql.createPool({
+    uri: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: true
+    }
+});
+
+const MAX_TRANSLATIONS = 20;
+
+// Initialize table if it doesn't exist
+pool.query(`
+    CREATE TABLE IF NOT EXISTS user_translations (
+        ip_address VARCHAR(45) PRIMARY KEY,
+        translation_count INT DEFAULT 0,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )
+`).catch(err => console.error("Error creating table:", err));
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,30 +57,55 @@ const openai = new OpenAI({
 
 const ALLOWED_LANGUAGES = ["english", "spanish", "french", "italian", "german", "japanese", "russian", "portuguese", "chinese", "korean"];
 
-const rateLimits = new Map();
+const rateLimiter = async (req, res, next) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-const rateLimiter = (req, res, next) => {
-    const ip = req.ip;
-    const now = Date.now();
-    const windowMs = 60 * 1000;
-    const limit = 20;
+    try {
+        const [rows] = await pool.query(`
+            SELECT IF(TIMESTAMPDIFF(HOUR, updated_at, CURRENT_TIMESTAMP) >= 24, 0, translation_count) as active_count 
+            FROM user_translations 
+            WHERE ip_address = ?
+        `, [ip]);
+        
+        let currentCount = 0;
+        if (rows.length > 0) {
+            currentCount = rows[0].active_count;
+        }
 
-    if (!rateLimits.has(ip)) {
-        rateLimits.set(ip, []);
+        if (currentCount >= MAX_TRANSLATIONS) {
+            return res.status(429).json({ success: false, error: "Has alcanzado el límite máximo de 20 traducciones." });
+        }
+        
+        next();
+    } catch (dbError) {
+        console.error("Error al consultar TiDB:", dbError);
+        return res.status(500).json({ success: false, error: "Error interno del servidor al verificar límites." });
     }
-
-    const timestamps = rateLimits.get(ip);
-    const validTimestamps = timestamps.filter(ts => now - ts < windowMs);
-    
-    if (validTimestamps.length >= limit) {
-        rateLimits.set(ip, validTimestamps);
-        return res.status(429).json({ success: false, error: "Demasiadas peticiones. Espera un momento." });
-    }
-    
-    validTimestamps.push(now);
-    rateLimits.set(ip, validTimestamps);
-    next();
 };
+
+app.get("/api/limit", async (req, res) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    try {
+        const [rows] = await pool.query(`
+            SELECT IF(TIMESTAMPDIFF(HOUR, updated_at, CURRENT_TIMESTAMP) >= 24, 0, translation_count) as active_count 
+            FROM user_translations 
+            WHERE ip_address = ?
+        `, [ip]);
+        
+        let currentCount = 0;
+        if (rows.length > 0) {
+            currentCount = rows[0].active_count;
+        }
+
+        return res.status(200).json({ 
+            success: true, 
+            limit: MAX_TRANSLATIONS,
+            remaining: Math.max(0, MAX_TRANSLATIONS - currentCount)
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, remaining: 0 });
+    }
+});
 
 app.post("/api/translate", rateLimiter, async (req, res) => {
 
@@ -108,9 +152,26 @@ app.post("/api/translate", rateLimiter, async (req, res) => {
 
         const translateText = completion.choices[0].message.content;
 
+        let newCount = 1;
+        try {
+            const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            await pool.query(`
+                INSERT INTO user_translations (ip_address, translation_count, updated_at) 
+                VALUES (?, 1, CURRENT_TIMESTAMP) 
+                ON DUPLICATE KEY UPDATE 
+                    translation_count = IF(TIMESTAMPDIFF(HOUR, updated_at, CURRENT_TIMESTAMP) >= 24, 1, translation_count + 1),
+                    updated_at = CURRENT_TIMESTAMP
+            `, [ip]);
+            const [rows] = await pool.query(`SELECT translation_count FROM user_translations WHERE ip_address = ?`, [ip]);
+            if (rows.length > 0) newCount = rows[0].translation_count;
+        } catch (dbError) {
+            console.error("Error al actualizar límite en TiDB:", dbError);
+        }
+
         return res.status(200).json({
             success: true,
-            translateText
+            translateText,
+            remaining: Math.max(0, MAX_TRANSLATIONS - newCount)
         });
 
     } catch (error) {
