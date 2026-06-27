@@ -46,6 +46,9 @@ function createMessage(text, type = "bot") {
     return msg;
 }
 
+// Mostrar mensaje de bienvenida
+createMessage(`${getTimestamp()} — Bot: ¡Hola! Soy un asistente de traducción impulsado por OpenAI. Escribe un texto y selecciona el idioma al que deseas traducirlo para comenzar.`, "bot");
+
 const showLoader = () => {
     return createMessage("Bot: Traduciendo...", "bot");
 };
